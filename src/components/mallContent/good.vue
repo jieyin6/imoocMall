@@ -30,6 +30,7 @@ export default {
     border: 2px solid #e9e9e9;
     &:hover{
         border-color: #ee7a23;
+        transform: translateY(-10px)
     }
     img{
         width: 100%;

@@ -1,9 +1,16 @@
 <template>
   <div class="good-list">
-      <ul>
+      <ul class="goods-container">
         <li v-for="(good,index) in goods" :key="index">
             <goods :good='good'></goods>
         </li>
+      </ul>
+      <ul  class="page-container">
+          <li v-for="(indexnum,index) in indexNum" 
+              :key="index"
+              @click="sendPage(index)"
+              :class="{current:currentIndex == index}"
+              >{{index+1}}</li>
       </ul>
   </div>
 </template>
@@ -20,29 +27,68 @@ export default {
             default(){
                 return []
             }
+        },
+        indexNum:{
+            type:Number,
+            default:0
+        },
+        currentIndex:{
+            type:Number,
+            default:0
         }
-    }
+    },
+   methods:{
+       sendPage(index){
+           this.$emit('sendPage',index+1)
+       }
+   }
 }
 </script>
 
 <style lang='scss'>
 .good-list{
-    li{
-        float: left;
-        width: 23.80952%;
-        margin-right: 1.5873%;
-        margin-bottom: 1.5873%;
-        &:nth-of-type(4n){
-            margin-right: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    .goods-container{
+        li{
+            float: left;
+            width: 23.80952%;
+            margin-right: 1.5873%;
+            margin-bottom: 1.5873%;
+            &:nth-of-type(4n){
+                margin-right: 0;
+            }
         }
     }
+    .page-container{
+        display: flex;
+        justify-content: flex-end;
+        height: 30px;
+        line-height: 30px;
+        font-size: 16px;
+        li{
+            width: 30px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            margin-left: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .current{
+            background-color:#ee7a23; 
+        }
+    }
+
 }
 @media (max-width:980px) {
     .good-list{
+        .goods-container{
         li{
            width: 100%;
            margin-right: 0;
         }
+      }
     }
 }
 </style>

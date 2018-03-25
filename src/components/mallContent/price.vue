@@ -1,6 +1,6 @@
 <template>
   <div class="price">
-      <div class="price-title" @click="clearAll" ref="priceTitle">P R I C E :</div>
+      <div class="price-title" ref="priceTitle">P R I C E :</div>
       <ul>
           <li ref="priceLi" @click="changeStyle(index)" :class="{'current':index === currentIndex}" class="price-item" v-for="(price,index) in priceList" :key="index">{{price}}</li>
       </ul>
@@ -18,12 +18,13 @@ export default {
     data(){
         return{
             priceList:[
+                'All',
                 '0.00 - 100.00',
                 '101.00-500.00',
                 '501.00-1000.00',
-                '1001.00-2000.00'
+                '1001.00-5000.00'
             ],
-            currentIndex:null
+            currentIndex:0
         }
     },
     mounted(){
@@ -32,10 +33,9 @@ export default {
     methods:{
         changeStyle(index){
             this.currentIndex = index
+            this.$emit('pickPrice',index)
         },
-        clearAll(){
-            this.currentIndex = null
-        },
+        
         slideStyle(){
             if(this.slide === true){
                 //this.$refs.priceLi.style.borderBottom = '1px solid #ee7a23'

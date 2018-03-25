@@ -28,6 +28,8 @@ export default {
 <style lang='scss'>
     .footer{
         position: relative;
+        
+        
         .footer-container{
             height:100px;
             margin: 50px 36px 0 36px;

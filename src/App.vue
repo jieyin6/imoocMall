@@ -1,21 +1,22 @@
 <template>
   <div id="app">
     <mall-header></mall-header>
-    <mall-content ></mall-content>
-    <mall-footer></mall-footer>
+    <mall-nav></mall-nav>
     <router-view/>
+    <mall-footer></mall-footer>
+    
   </div>
 </template>
 
 <script>
 import mallHeader from './components/mallHeader/mall-header'
 import mallFooter from './components/mallFooter/mall-footer'
-import mallContent from './components/mallContent/mall-content'
+import mallNav from './components/mallNav/mall-nav'
 export default {
   components:{
     mallHeader,
     mallFooter,
-    mallContent
+    mallNav
   },
  
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="nav">
       <div class="menu-container">
-          <span class="menu-home">Home /</span>
-          <slot></slot>
+          <router-link to="/home">Home /</router-link>
+          <router-link to="/goods">goods</router-link>
       </div>
     </div>
 </template>
@@ -22,9 +22,12 @@ export default {
     .menu-container{
         float: left;
         line-height: 45px;
-        .menu-home{
+        a{
+            color: #000;
+        }
+        .active{
             font-size: 14px;
-            color: #a1a1a1;
+            color: #ee7a23;
         }
         
     }

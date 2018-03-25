@@ -1,23 +1,23 @@
 <template>
   <div class="content">
-      <mall-nav class="nav-color">
-          <span>goods</span>
-      </mall-nav>
       <div class="container">
         <div class="content-nav">
           <div class="nav-container">
               <span class="margin">Sort by:</span>
               <a class="color" href="javascript:void(0)">Default</a>
-              <a href="javascript:void(0)"  @click="lowToTop">{{pickPrice}}</a>
+              <a href="javascript:void(0)" @click="sortPrice" >{{pickPrice}}</a>
           </div>
           <div class="hide-text" @click="slideShow = true">Filter By</div>
         </div>
         <div class="content-container">
           <div class="content-left">
-            <price ></price>
+            <price @pickPrice='pickPriceItem'></price>
           </div>
           <div class="content-goods">
-              <good-list :goods='goodList'></good-list>
+              <good-list :goods='goodList' 
+                         :indexNum='pageNum'
+                         :currentIndex='page - 1'
+                         @sendPage='changePage'></good-list>
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@
       <div class="slide-price" v-show="slideShow">
           <div class="mask-back"></div>
           <div class="mask-title"></div>
-          <price :slide='true' class="price"></price>
+          <price :slide='true' class="price" @pickPrice='pickPriceItem'></price>
       </div>
       </transition>
       <transition name="slide">
@@ -48,18 +48,69 @@ export default {
         return{
             goodList:[],
             slideShow:false,
-            pickPrice:'Price ↑'
+            pickPrice:'Price ↑',
+            page:1,
+            pageSize:8,
+            sort:true,
+            addData:true,
+            //scroll:true,
+            pageNum:1,
+            priceItem:0
         }
     },
+    
     created(){
-        this.$http.get('/goods').then(res => {
-            this.goodList = res.data.result.list
-        }).catch(err => {
-            console.log(err);
-    })
+        this.getData()
+        this.getAllData()
+  },
+  mounted(){
+     // window.addEventListener('scroll',this.handleScroll)
   },
   methods:{
-      lowToTop(){
+      //请求所有数据
+      getAllData(){
+          let param = {
+                'pageSize':18,
+                'page':1,
+                'sort':1,
+                'pickPrice':this.priceItem
+            }
+            let _this = this
+            this.$http.get('/goods',{
+                params:param
+            }).then(res => {
+                _this.pageNum = res.data.result.count
+                _this.pageNum = parseInt(_this.pageNum/_this.pageSize)+1
+            })
+            
+      },
+      getData(add){
+        let param = {
+            'page':this.page,
+            'pageSize':this.pageSize,
+            'sort':this.sort ? 1 : -1,
+            'pickPrice':this.priceItem
+        }
+        let _this = this
+        this.$http.get('/goods',{
+            params:param
+        }).then(res => {
+            console.log(res.data.result.list)
+            if(add == true){
+                _this.pageCount = res.data.result.list.length
+                _this.goodList = this.goodList.concat(res.data.result.list)
+               // console.log(this.pageCount)
+            /*    if(_this.pageCount < _this.pageSize){
+                    _this.scroll = false
+                }*/
+            }else{
+                _this.goodList = res.data.result.list
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+      },
+   /*   lowToTop(){
           if(this.pickPrice == 'Price ↑'){
               const goodArr = this.goodList
               goodArr.sort((a,b) => {
@@ -75,7 +126,41 @@ export default {
               this.goodList = goodArr
               this.pickPrice = 'Price ↑'
           }
+      }*/
+      sortPrice(){
+         if(this.sort === true){
+              this.pickPrice = 'Price ↓'
+              this.page = 1
+              this.sort = false
+              this.getData()
+          }else{
+              this.pickPrice = 'Price ↑'
+              this.page = 1
+              this.sort = true
+              this.getData()
+          }
+      },
+      changePage(index){
+          this.page = index
+          this.getData()
+      },
+      //价格区间
+      pickPriceItem(index){
+          this.priceItem = index
+          this.getData()
+          this.getAllData()
       }
+    /*  handleScroll(){
+          if(this.scroll === true){
+              let scrollY = window.scrollY
+              let height = window.innerHeight/2
+              console.log(this.scroll)
+              if(scrollY > height){
+                    this.page ++
+                    this.getData(true)
+                }
+        }
+    }*/
   }
 }
 </script>
@@ -88,13 +173,14 @@ export default {
         color: #d1434a;
     }
     .container{
-        padding: 60px 20px 0 20px;
+        padding: 60px 20px 20px 20px;
         .content-nav{
         width: 100%;
         height:55px;
         line-height: 55px;
         color: #605f5f;
         background-color: #fff;
+        
         .nav-container{
             float: right;
             padding-right:20px; 
