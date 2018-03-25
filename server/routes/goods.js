@@ -55,4 +55,73 @@ router.get('/',function(req,res,next){
     })
 })
 
+router.post('/cart',function(req,res,next){
+    let userId = '100000077'
+    let User = require('../models/user')
+    let productId = req.body.productId
+    User.findOne({userId:userId},function(err,userDoc){
+        if(err){
+            res.json({
+                status:'1',
+                message:err.message
+            })
+        }else{
+            if(userDoc){
+                let product = ''
+                userDoc.cartList.forEach(item => {
+                    if(item.productId === productId){
+                        product = item
+                        item.productNum ++
+                    }
+                });
+                if(product){
+                    userDoc.save(function(err2,doc){
+                        if(err2){
+                            res.json({
+                                status:'1',
+                                message:err2.message
+                            })
+                        }else{
+                            res.json({
+                                status:'0',
+                                message:'',
+                                result:'success'
+                            })
+                        }
+                    })
+                }else{
+                    Goods.findOne({productId:productId},function(err1,goodDoc){
+                        if(err1){
+                            res.json({
+                                status:'1',
+                                message:err1.message
+                            })
+                        }else{
+                            if(goodDoc){
+                                goodDoc.productNum = 1
+                                goodDoc.checked = 1
+                                userDoc.cartList.push(goodDoc)
+                                userDoc.save(function(err2,doc){
+                                    if(err2){
+                                        res.json({
+                                            status:'1',
+                                            message:err2.message
+                                        })
+                                    }else{
+                                        res.json({
+                                            status:'0',
+                                            message:'',
+                                            result:'success'
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+               
+            }
+        }
+    })
+})
 module.exports = router

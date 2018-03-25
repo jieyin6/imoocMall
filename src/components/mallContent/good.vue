@@ -4,7 +4,7 @@
         <div class="good-item">
             <div class="good-name">{{good.productName}}</div>
             <div class="good-price">${{good.salePrice}}</div>
-            <div class="good-add">加入购物车</div>
+            <div class="good-add" @click.stop="addCart(good.productId)">加入购物车</div>
         </div>
      
   </div>
@@ -20,7 +20,17 @@ export default {
             }
         }
     },
-   
+   methods:{
+       addCart(id){
+           this.$http.post('/goods/cart',{productId:id}).then(res => {
+               if(res.status === 200){
+                   alert('success')
+               }else{
+                   alert('fail')
+               }
+           })
+       }
+   }
 }
 </script>
 

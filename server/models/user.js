@@ -7,14 +7,14 @@ let userModel = new Schema({
     'userName':String,
     'userPwd':String,
     'orderList':Array,
-    'cartList':{
+    'cartList':[{
         'productId':String,
         'productName':String,
         'salePrice':Number,
         'productImage':String,
-        'checked':Boolean,
-        'productCount':Number
-    },
+        'checked':String,
+        'productNum':String
+    }],
     'addressList':Array
 }) 
 module.exports = mongoose.model('User',userModel)

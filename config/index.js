@@ -17,7 +17,10 @@ module.exports = {
         pathRewrite: {
           '^/goods': '/goods'
         }
-      }
+      },
+      '/users/*':{
+        target:'http://localhost:3000',
+        }
     },
 
     // Various Dev Server settings

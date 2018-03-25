@@ -4,7 +4,6 @@
     <mall-nav></mall-nav>
     <router-view/>
     <mall-footer></mall-footer>
-    
   </div>
 </template>
 
@@ -16,7 +15,8 @@ export default {
   components:{
     mallHeader,
     mallFooter,
-    mallNav
+    mallNav,
+   
   },
  
 }

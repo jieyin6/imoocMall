@@ -17,7 +17,9 @@
               <good-list :goods='goodList' 
                          :indexNum='pageNum'
                          :currentIndex='page - 1'
-                         @sendPage='changePage'></good-list>
+                         :pageListNum='pageListNum' 
+                         @sendPage='changePage'
+                         @pageSend='pageChange'></good-list>
           </div>
         </div>
       </div>
@@ -50,23 +52,45 @@ export default {
             slideShow:false,
             pickPrice:'Price ↑',
             page:1,
-            pageSize:8,
+            //pageSize:8,
+            pageSize:1,
             sort:true,
             addData:true,
             //scroll:true,
             pageNum:1,
-            priceItem:0
+            priceItem:0,
+            //分页组件数据
+            pageListNum:0
         }
     },
     
-    created(){
+ created(){
         this.getData()
         this.getAllData()
+        this.pageGetData()
   },
   mounted(){
      // window.addEventListener('scroll',this.handleScroll)
   },
   methods:{
+      //实现分页组件的数据请求
+      pageGetData(){
+          let param = {
+                'pageSize':18,
+                'page':1,
+                'sort':1,
+                'pickPrice':this.priceItem
+            }
+            let _this = this
+            this.$http.get('/goods',{
+                params:param
+            }).then(res => {
+                console.log(res.data.result.count)
+                _this.pageListNum = res.data.result.count
+                
+            })
+            
+      },
       //请求所有数据
       getAllData(){
           let param = {
@@ -141,6 +165,11 @@ export default {
           }
       },
       changePage(index){
+          this.page = index
+          this.getData()
+      },
+      //page组件
+      pageChange(index){
           this.page = index
           this.getData()
       },

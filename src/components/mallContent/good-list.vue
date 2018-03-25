@@ -5,21 +5,24 @@
             <goods :good='good'></goods>
         </li>
       </ul>
-      <ul  class="page-container">
+   <!--   <ul  class="page-container">
           <li v-for="(indexnum,index) in indexNum" 
               :key="index"
               @click="sendPage(index)"
               :class="{current:currentIndex == index}"
               >{{index+1}}</li>
-      </ul>
+      </ul>  -->
+      <page-list :listNum='pageListNum' @pageChange='changePage'></page-list>
   </div>
 </template>
 
 <script>
+import pageList from './page-list'
 import goods from './good'
 export default {
     components:{
-        goods
+        goods,
+        pageList
     },
     props:{
         goods:{
@@ -35,11 +38,20 @@ export default {
         currentIndex:{
             type:Number,
             default:0
+        },
+        //分页组件数据
+        pageListNum:{
+            type:Number,
+            default:0
         }
     },
    methods:{
        sendPage(index){
            this.$emit('sendPage',index+1)
+       },
+       //page组件
+       changePage(index){
+           this.$emit('pageSend',index)
        }
    }
 }
