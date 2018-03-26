@@ -12,7 +12,7 @@
               :class="{current:currentIndex == index}"
               >{{index+1}}</li>
       </ul>  -->
-      <page-list :listNum='pageListNum' @pageChange='changePage'></page-list>
+      <page-list :listNum='pageListNum' @pageChange='changePage' class="page-list"></page-list>
   </div>
 </template>
 
@@ -72,6 +72,10 @@ export default {
                 margin-right: 0;
             }
         }
+    }
+    .page-list{
+        display: flex;
+        justify-content: flex-end;
     }
     .page-container{
         display: flex;

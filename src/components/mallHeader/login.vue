@@ -39,17 +39,19 @@ export default {
             this.$emit('hide')
         },
         login(){
+            let _this = this
             this.$http.post('/users/login',{
                 username:this.userName,
                 password:this.password
             }).then(res => {
                 if(res.status == 200){
-                    this.errTip = false
+                    _this.errTip = false
+                    _this.$emit('hide')
                 }else{
-                    this.errTip = true
+                    _this.errTip = true
                 }
             })
-            this.$emit('hide')
+            
         }
     }
 }
