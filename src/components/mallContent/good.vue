@@ -6,12 +6,14 @@
             <div class="good-price">${{good.salePrice}}</div>
             <div class="good-add" @click.stop="addCart(good.productId)">加入购物车</div>
         </div>
-     
+       
   </div>
 </template>
 
 <script>
+
 export default {
+    
     props:{
         good:{
             type:Object,
@@ -22,13 +24,15 @@ export default {
     },
    methods:{
        addCart(id){
+           
            this.$http.post('/goods/cart',{productId:id}).then(res => {
-               if(res.status === 200){
-                   alert('success')
-               }else{
-                   alert('fail')
-               }
+               if(res.data.status == '0'){
+                    this.$emit('show')
+                }else{
+                    this.$emit('alert')
+                }
            })
+           
        }
    }
 }
@@ -62,6 +66,10 @@ export default {
             border: 1px solid #d1434a;
             text-align: center;
             font-size: 18px;
+            &:hover{
+                color: #fff;
+                background-color: #d1434a
+            }
         }
     }
     

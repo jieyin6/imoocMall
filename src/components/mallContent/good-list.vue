@@ -2,27 +2,36 @@
   <div class="good-list">
       <ul class="goods-container">
         <li v-for="(good,index) in goods" :key="index">
-            <goods :good='good'></goods>
+            <goods :good='good' @show='showEvent' @alert='alertEvent'></goods>
         </li>
       </ul>
-   <!--   <ul  class="page-container">
+      <ul  class="page-container">
           <li v-for="(indexnum,index) in indexNum" 
               :key="index"
               @click="sendPage(index)"
               :class="{current:currentIndex == index}"
               >{{index+1}}</li>
-      </ul>  -->
-      <page-list :listNum='pageListNum' @pageChange='changePage' class="page-list"></page-list>
+      </ul>  
+      <modal class="modal" v-show="alertModal">
+           <p slot="title" >请先登录</p>
+           <p slot="btn" class="slot-btn" @click="alertModal = false">关闭</p>
+           
+     </modal>
+      <modal class="modal" v-show="showModal">
+           <p slot="title" >加入购物车成功</p>
+           <p slot="btn" class="slot-btn" @click="showModal = false">继续购物</p>
+           <router-link slot="btn" class="slot-btn" to="/shoppingCart">查看购物车</router-link>
+     </modal>
   </div>
 </template>
 
 <script>
-import pageList from './page-list'
+import modal from '../modal'
 import goods from './good'
 export default {
     components:{
         goods,
-        pageList
+        modal
     },
     props:{
         goods:{
@@ -39,19 +48,23 @@ export default {
             type:Number,
             default:0
         },
-        //分页组件数据
-        pageListNum:{
-            type:Number,
-            default:0
+        
+    },
+    data(){
+        return{
+            showModal:false,
+            alertModal:false
         }
     },
    methods:{
        sendPage(index){
            this.$emit('sendPage',index+1)
        },
-       //page组件
-       changePage(index){
-           this.$emit('pageSend',index)
+       showEvent(){
+           this.showModal = true
+       },
+       alertEvent(){
+           this.alertModal = true
        }
    }
 }
@@ -93,6 +106,15 @@ export default {
         }
         .current{
             background-color:#ee7a23; 
+        }
+    }
+    .modal{
+        .slot-btn{
+            padding: 10px;
+            border: 1px solid skyblue;
+            &:hover{
+                background-color: skyblue
+            }
         }
     }
 

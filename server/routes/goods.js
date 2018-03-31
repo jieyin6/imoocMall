@@ -11,7 +11,7 @@ mongoose.connection.on('connected',function(){
 mongoose.connection.on('error',function(){
         console.log('fail');
     })
-router.get('/',function(req,res,next){
+router.get('/list',function(req,res,next){
     let page = parseInt(req.query.page)
     let pageSize = parseInt(req.query.pageSize)
     let priceItem = parseInt(req.query.pickPrice)

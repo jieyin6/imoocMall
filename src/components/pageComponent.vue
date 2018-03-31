@@ -29,7 +29,6 @@ export default {
             propsPageSize:this.obj.pageSize,
             propsTotalCount:this.obj.totalCount,
             pageTotalCount:null,
-            pageCount:null,
             pageArr:[],
             currentIndex:0
         }
@@ -88,6 +87,7 @@ export default {
                     return
                 }
             }
+            this.$emit('page',this.pageArr[this.currentIndex])
             
         },
         lastPage(){
@@ -100,6 +100,7 @@ export default {
                 this.changeArray(currentpageCount-10,currentpageCount-1)
                 this.currentIndex = this.pageArr.length-1
             }
+            this.$emit('page',this.pageArr[this.currentIndex])
         },
         laterTenPage(){
             let last = this.pageArr[this.pageArr.length-1]
@@ -118,6 +119,7 @@ export default {
                 }
             }
             this.currentIndex = 0
+            this.$emit('page',this.pageArr[this.currentIndex])
         },
         previousTenPage(){
             let first = this.pageArr[0]
@@ -127,6 +129,7 @@ export default {
                 this.changeArray(first-10,first-1)
             }
             this.currentIndex = 0
+            this.$emit('page',this.pageArr[this.currentIndex])
         }
     }
 

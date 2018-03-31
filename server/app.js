@@ -20,6 +20,25 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req,res,next){
+  if(req.cookies.userId){
+    next()
+  }else{
+    
+    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/loginout' || req.originalUrl.indexOf("/goods/list") > -1){
+      console.log('lanjie fail')
+      next()
+    }else{
+      console.log('lanjie success')
+      res.json({
+        status:'10001',
+        message:'当前未登录',
+        result:''
+      })
+    }
+  }
+})
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goods',goodsRouter)

@@ -34,7 +34,9 @@ export default {
             password:''
         }
     },
+   
     methods:{
+        
         hideLogin(){
             this.$emit('hide')
         },
@@ -45,8 +47,10 @@ export default {
                 password:this.password
             }).then(res => {
                 if(res.status == 200){
+                    console.log(res.data.result.user)
+                    let result = res.data.result.user
                     _this.errTip = false
-                    _this.$emit('hide')
+                    _this.$emit('hide',result)
                 }else{
                     _this.errTip = true
                 }
