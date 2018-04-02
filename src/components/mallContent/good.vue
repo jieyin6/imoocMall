@@ -28,6 +28,7 @@ export default {
            this.$http.post('/goods/cart',{productId:id}).then(res => {
                if(res.data.status == '0'){
                     this.$emit('show')
+                    this.$store.commit('updateNum',1)
                 }else{
                     this.$emit('alert')
                 }

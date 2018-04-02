@@ -4,10 +4,11 @@
           <img src="./images/logo1.png" />
       </div>
       <div class="header-right">
-          <span class="right-login" v-show="userName">{{userName}}</span>
-          <span class="right-login" @click="isHide = true" v-show="!userName">Login</span>
-          <span class="right-login" @click="loginOut" v-show="userName">Login Out</span>
+          <span class="right-login" v-show="nickName">{{nickName}}</span>
+          <span class="right-login" @click="isHide = true" v-show="!nickName">Login</span>
+          <span class="right-login" @click="loginOut" v-show="nickName">Login Out</span>
           <span class="right-login" @click="openCart">购物车</span>
+          <span class="cart-num" v-show="cartNum > 0">{{cartNum}}</span>
       </div>
       <login :isHide='isHide' @hide='hideLogin'></login>
     </div>
@@ -15,6 +16,7 @@
 
 <script>
 import login from './login'
+import { mapState } from 'vuex'
 export default {
    components:{
        login
@@ -22,8 +24,10 @@ export default {
    data(){
        return{
        isHide:false,
-       userName:''
-       }
+        }
+   },
+   computed:{
+       ...mapState(['nickName','cartNum'])
    },
     mounted(){
         this.checkLogin()
@@ -34,25 +38,37 @@ export default {
             this.$http.get('/users/checkLogin').then(res => {
                 console.log(res)
                 if(res.data.status == '0'){
-                    this.userName = res.data.result
+                    //this.userName = res.data.result
+                    _this.$store.commit('updateName',res.data.result)
+                    _this.getcartNum()
                 }
             })
         },
        hideLogin(user){
             this.isHide = false
-            this.userName = user
+            //this.userName = user
+            this.$store.commit('updateName',user)
         },
         loginOut(){
             this.$http.post('/users/loginout').then(res => {
                 console.log(res)
                 if(res.status == 200){
-                    this.userName = ''
+                    //this.userName = ''
+                    this.$store.commit('updateName','')
                     console.log('loginout')
                 }
             })
         },
         openCart(){
             this.$router.push('/shoppingCart')
+        },
+        getcartNum(){
+            let _this = this
+            this.$http.get('users/cartNum').then(res => {
+                if(res.data.status == '0'){
+                    _this.$store.commit('initNum',res.data.result)
+                }
+            })
         }
    }
    
@@ -80,6 +96,20 @@ export default {
             display: inline-block;
             margin-left: 20px;
             font-size: 16px;
+        }
+        .cart-num{
+            position: absolute;
+            right: 25px;
+            top: 18px;
+            width: 15px;
+            height: 15px;
+            font-size: 12px;
+            line-height: 15px;
+            text-align: center;
+            font-weight: 800;
+            border-radius: 7px;
+            background-color: red;
+            color: #fff;
         }
     }
 }

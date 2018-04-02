@@ -2,18 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import goodList from '../components/mallContent/mall-content'
 import shoppingCart from '../components/shoppingCart/shoppingCart'
-import adress from '../components/adress/adress'
-import orderConfirm from '../components/adress/orderConfirm'
-import payment from '../components/adress/payment'
-import order from '../components/adress/order'
-import confirmAdress from '../components/adress/confrimAdress'
+import address from '../components/address/address'
+import orderConfirm from '../components/address/orderConfirm'
+import payment from '../components/address/payment'
+import order from '../components/address/order'
+import confirmAddress from '../components/address/confrimAddress'
 
 Vue.use(Router)
 
 
 export default new Router({
-  //linkActiveClass:'active',
-  linkExactActiveClass:'active',
+  linkActiveClass:'active',
+  linkExactActiveClass:'exact',
   routes: [
     {
       path: '/',
@@ -28,33 +28,36 @@ export default new Router({
       component:shoppingCart
     },
     {
-      path:'/adress',
-      component:adress,
-      
+      path:'/address',
+      component:address,
       children:[
-        
-        
         {
           path:'',
-          component:confirmAdress
+          redirect:'/address/confrimAddress'
         },
         
         {
-          path:'confrimAdress',
-          name:'confromAdress',
-          component:confirmAdress
+          path:'confrimAddress',
+          name:'confromAddress',
+          component:confirmAddress
         },
         {
-          path:'payment',
-          component:payment
+          path:'payment:id',
+          component:payment,
+          name:'payment',
+          props:true
         },
         {
-          path:'order',
-          component:order
+          path:'order:id',
+          component:order,
+          name:'order',
+          props:true
         },
         {
-          path:'orderConfrim',
-          component:orderConfirm
+          path:'orderConfrim:id',
+          component:orderConfirm,
+          name:'orderConfrim',
+          props:true
         }
       ]
     }

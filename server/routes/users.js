@@ -1,9 +1,7 @@
-//import { readFile } from '_tsconfig@7.0.0@tsconfig';
-
 var express = require('express');
 var router = express.Router();
 var userModal = require('../models/user')
-
+require('../until/util')
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -97,6 +95,29 @@ router.get('/cart',function(req,res,next){
     })
   }
 })
+//购物车数量
+router.get('/cartNum',function(req,res,next){
+  let id = req.cookies.userId
+  userModal.findOne({userId:id},function(err,user){
+    if(err){
+      res.json({
+        status:'1',
+        message:err.message,
+        result:''
+      })
+    }else{
+      let num = 0
+      user.cartList.forEach(item=>{
+        num += parseInt(item.productNum)
+      })
+      res.json({
+        status:'0',
+        message:'',
+        result:num
+      })
+    }
+  })
+})
 //购物车删除
 router.post('/del',function(req,res,next){
   let id = req.body.productId
@@ -185,6 +206,196 @@ router.post('/checkAll',function(req,res,next){
         }
       })
       }
+    }
+  })
+})
+//用户地址
+router.get('/address',function(req,res,next){
+  let id = req.cookies.userId
+  userModal.findOne({userId:id},function(err,doc){
+    if(err){
+      res.json({
+        status:'1',
+        message:err.message,
+        result:''
+      })
+    }else{
+      res.json({
+        status:'0',
+        message:'',
+        result:doc.addressList
+      })
+    }
+  })
+})
+//设置默认地址
+router.post('/default',function(req,res,next){
+  let id = req.cookies.userId
+  let addressId = req.body.addressId
+  if(!addressId){
+    res.json({
+      status:'10003',
+      message:'没传参数',
+      result:''
+    })
+  }
+  userModal.findOne({userId:id},function(err,user){
+    if(err){
+      res.json({
+        status:'1',
+        message:err.message,
+        result:''
+      })
+    }else{
+      let address = user.addressList
+      address.forEach(item => {
+        if(item.addressId == addressId){
+          item.isDefault = true
+        }else{
+          item.isDefault = false
+        }
+      })
+      user.save(function(err1,doc){
+        if(err1){
+          res.json({
+            status:'1',
+            message:err1.message,
+            result:''
+          })
+        }else{
+          res.json({
+            status:'0',
+            message:'设置成功',
+            result:''
+          })
+        }
+      })
+    }
+  })
+})
+//删除地址
+router.post('/deleteAddress',function(req,res,next){
+  let id = req.cookies.userId
+  let addressId = req.body.addressId
+  userModal.update({userId:id},{
+    $pull:{
+      'addressList':{
+      'addressId':addressId
+      }
+    }
+  },function(err,doc){
+    if(err){
+      res.json({
+        status:'1',
+        message:'删除失败',
+        result:''
+      })
+    }else{
+      res.json({
+        status:'0',
+        message:'删除成功',
+        result:''
+      })
+    }
+  }) 
+})
+//创建订单
+router.post('/payment',function(req,res,next){
+  let id = req.cookies.userId
+  let addressId = req.body.addressId
+  let totalPrice = req.body.totalPrice
+  userModal.findOne({userId:id},function(err,user){
+    if(err){
+      res.json({
+        status:'1',
+        message:err.message,
+        result:''
+      })
+    }else{
+      //收货地址
+      let address = null
+      user.addressList.forEach(item => {
+        if(item.isDefault == true){
+          address = item
+        }
+      })
+      //商品
+      let goods = []
+      user.cartList.forEach(item => {
+        if(item.checked == 1){
+          goods.push(item)
+        }
+      })
+      //订单id
+      let format = 233
+      let num1 = Math.floor(Math.random()*10)
+      let num2 = Math.floor(Math.random()*10)
+      let date = new Date().Format('yyyyMMddhhmmss')
+      let orderId = format + num1 + date + num2
+      //创建订单日期
+      let creatDate = new Date().Format('yyyy-MM-dd hh:mm:ss')
+      //订单对象
+      let order = {
+        'orderId':orderId,
+        'goods':goods,
+        'address':address,
+        'totalPrice':totalPrice,
+        'orderStatus':1,
+        'createDate':creatDate
+      }
+      user.orderList.push(order)
+      user.save(function(err1,doc){
+        if(err1){
+          res.json({
+            status:'1',
+            message:err1.message,
+            result:''
+          })
+        }else{
+          res.json({
+            status:'0',
+            message:'创建订单成功',
+            result:{
+              orderId:orderId,
+              totalPrice:totalPrice
+            }
+          })
+        }
+      })
+    }
+  })
+})
+//获取订单
+router.get('/order',function(req,res,next){
+  let id = req.cookies.userId
+  console.log(req.query.orderId);
+  let orderId = req.query.orderId
+  
+  
+  userModal.findOne({userId:id},function(err,user){
+    if(err){
+      res.json({
+        status:'1',
+        message:'未登录',
+        result:''
+      })
+    }else{
+      let total = 0
+      user.orderList.forEach(item => {
+        if(item.orderId == orderId){
+          total = item.totalPrice
+        }
+      })
+      console.log(total);
+      
+      res.json({
+        status:'0',
+        message:'',
+        result:{
+          'orderId':orderId,
+          'total':total
+        }
+      })
     }
   })
 })

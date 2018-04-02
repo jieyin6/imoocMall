@@ -174,7 +174,7 @@ export default {
             if(this.checkCount == 0){
                 return
             }else{
-                this.$router.push('/adress')
+                this.$router.push('/address')
             }
         },
         back(){

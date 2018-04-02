@@ -1,7 +1,7 @@
 <template>
   <ul class="top-options" >
           <li v-for="(item,index) in titles" :key="index">
-              <router-link :to="'/adress/'+item.path">
+              <router-link :to="'/address/'+item.path">
                 <div  class="options-title">{{item.title}}</div>
                 <div class="options-line"></div>
                 <div class="options-circle"></div>
@@ -16,8 +16,8 @@ export default {
         return{
             titles:[
                 {
-                     'title': 'Confirm Adress',
-                     'path':'confrimAdress'
+                     'title': 'Confirm Address',
+                     'path':'confrimAddress'
                 },
                 {
                     'title': 'View Your Order',
@@ -40,8 +40,8 @@ export default {
 <style lang='scss'>
     .top-options{
         display: flex;
-        margin-top: 20px;
-        li{
+        margin: 40px 0;
+         li{
             flex: 1;
             margin-right: 5px;
             text-align: center;
@@ -68,14 +68,14 @@ export default {
                 border-radius: 5px;
                 background-color: #000;
             }
-            .active{
+           
+            .exact{
                 .options-title{
                     color: red;
                 }
                 .options-circle,.options-line{
                     background-color: red
                 }
-                
             }
         }
     }
