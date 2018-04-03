@@ -368,10 +368,8 @@ router.post('/payment',function(req,res,next){
 //获取订单
 router.get('/order',function(req,res,next){
   let id = req.cookies.userId
-  console.log(req.query.orderId);
+  console.log(req.query);
   let orderId = req.query.orderId
-  
-  
   userModal.findOne({userId:id},function(err,user){
     if(err){
       res.json({
@@ -381,22 +379,37 @@ router.get('/order',function(req,res,next){
       })
     }else{
       let total = 0
-      user.orderList.forEach(item => {
-        if(item.orderId == orderId){
-          total = item.totalPrice
+      if(user.orderList.length > 0){
+        user.orderList.forEach(item => {
+          if(item.orderId == orderId){
+            total = item.totalPrice
+          }
+        })
+        if(total > 0){
+          res.json({
+            status:'0',
+            message:'',
+            result:{
+              'orderId':orderId,
+              'total':total
+            }
+          })
+        }else{
+          res.json({
+            status:'10003',
+            message:'没有此订单',
+            result:''
+          })
         }
-      })
-      console.log(total);
-      
-      res.json({
-        status:'0',
-        message:'',
-        result:{
-          'orderId':orderId,
-          'total':total
-        }
-      })
-    }
+        
+      }else{
+        res.json({
+          status:'10002',
+          message:'该用户未创建订单',
+          result:''
+        })
+      }
+  }
   })
 })
 module.exports = router;

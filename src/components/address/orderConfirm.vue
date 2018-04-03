@@ -31,12 +31,13 @@ export default {
   methods:{
     getData(){
       let _this = this
-     
-     let id = this.$route.params.id
-     console.log(id);
+      let id = this.$route.params.id
+      let param = {
+        'orderId':id
+      }
      
       this.$http.get('/users/order',{
-        orderId:id
+        params:param
       }).then(res => {
         if(res.data.status == 0){
           _this.totalPrice = res.data.result.total

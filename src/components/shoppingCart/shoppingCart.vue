@@ -24,7 +24,7 @@
               <button @click="cartItem('add',item)">+</button>
           </li>
           <li class="li-total">{{item.salePrice * item.productNum}}</li>
-          <li @click="deleteProduct(item.productId)">删除</li>
+          <li @click="deleteProduct(item.productId,item)">删除</li>
       </ul>
       <div class="footer">
           <div class="footer-left">
@@ -65,6 +65,7 @@ export default {
             isShow:false,
             deleteShow:false,
             productId:'',
+            delItem:null
         }
     },
     
@@ -112,9 +113,10 @@ export default {
         closeCart(){
             this.$router.back()
         },
-        deleteProduct(id){
+        deleteProduct(id,item){
             this.productId = id
             this.deleteShow = true
+            this.delItem = item
         },
         confirmDelete(){
             console.log(this.productId); 
@@ -127,6 +129,7 @@ export default {
                 if(res.data.status === '0'){
                     _this.deleteShow = false
                     _this.getList()
+                    _this.$store.commit('updateNum',-_this.delItem.productNum)
                 }else{
                     console.log('删除失败');
                 }
@@ -150,11 +153,17 @@ export default {
                 'productNum':item.productNum,
                 'checked':item.checked
             }).then(res => {
-                console.log(res);
-                
                 if(res.data.status === '0'){
                     console.log('操作成功');
-                    
+                    let num 
+                    if(type == 'add'){
+                        num = 1
+                    }else if(type == 'dec'){
+                        num = -1
+                    }else{
+                        num = 0
+                    }
+                    this.$store.commit('updateNum',num)
                 }
             })
         },

@@ -21,7 +21,7 @@ const store = new Vuex.Store({
     initNum(state,num){
       state.cartNum = num
     },
-    updataNum(state,num){
+    updateNum(state,num){
       state.cartNum += num
     }
   }
